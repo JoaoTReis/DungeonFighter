@@ -11,8 +11,22 @@ public class Warrior extends Heroes{
         setName("Warrior");
     }
 
-    @Override
+    //@Override
     public void ability() {
-        //faz a habilidade
+        double ability = getDefense() * 1.5;
+        setDefense((int) ability);
+    }
+
+    @Override
+    public String toString() {
+        return getName()
+                + "("
+                + " Attack: "
+                + getAttack()
+                + " Defense: "
+                + getDefense()
+                + " Life: "
+                + getLife()
+                + ")";
     }
 }

@@ -11,9 +11,24 @@ public class Paladin extends Heroes{
         setName("Paladin");
     }
 
-    @Override
+    //@Override
     public void ability() {
-        //faz a habilidade
+        double ability = getLife() * 1.5;
+        setLife((int) ability);
+        System.out.println(ability);
+    }
+
+    @Override
+    public String toString() {
+        return getName()
+                + "("
+                + " Attack: "
+                + getAttack()
+                + " Defense: "
+                + getDefense()
+                + " Life: "
+                + getLife()
+                + ")";
     }
 
 }

@@ -11,9 +11,24 @@ public class Barbarian extends Heroes{
         setName("Barbarian");
     }
 
-    @Override
+    //@Override
     public void ability() {
-        //faz a habilidade
+        double ability = getAttack() * 1.5;
+        setAttack((int) ability);
+        System.out.println(ability);
+    }
+
+    @Override
+    public String toString() {
+        return getName()
+                + "("
+                + " Attack: "
+                + getAttack()
+                + " Defense: "
+                + getDefense()
+                + " Life: "
+                + getLife()
+                + ")";
     }
 
 }
