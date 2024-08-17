@@ -1,30 +1,38 @@
 package pieces;
 
     public class Heroes extends Characters{
-        private final int choice;
-        private Heroes selectedHero;
+        private String name;
+        protected int abilitySpecial;
+        protected int pontosXp;
 
-        public Heroes(int choice) {
-            super();
-            this.choice = choice;
+        public Heroes(int life, int defense, int attack, String name) {
+            super(life, defense, attack);
+            this.name = name;
+            setLife(10);
         }
 
-        public Heroes selectHero(){
-            switch (choice){
-                case 1:
-                    return new Warrior(choice);
-                case 2:
-                    return new Paladin(choice);
-                case 3:
-                    return new Barbarian(choice);
-                default:
-                    throw new IllegalArgumentException("this choice is invalidate");
-            }
+        public String getName() {
+            return name;
         }
 
-        public Heroes getSelectedHero() {
-            return selectedHero;
+        public void setName(String name) {
+            this.name = name;
         }
 
-    //public abstract void ability();
-}
+        public int getAbilitySpecial() {
+            return abilitySpecial;
+        }
+
+        public void setAbilitySpecial(int abilitySpecial) {
+            this.abilitySpecial = abilitySpecial;
+        }
+
+        public int getPontosXp() {
+            return pontosXp;
+        }
+
+        public int setPontosXp(int pontosXp) {
+            this.pontosXp = pontosXp;
+            return pontosXp;
+        }
+    }

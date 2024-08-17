@@ -1,5 +1,6 @@
 package application;
 
+import boardGame.Board;
 import pieces.*;
 
 import java.util.Scanner;
@@ -7,25 +8,47 @@ import java.util.Scanner;
 public class Program {
     public static void main(String[] args) {
 
+//        Board board = new Board();
+
         Scanner sc = new Scanner(System.in);
 
+        char decisao = 0;
+        do {
         System.out.print("choose your hero:");
         int choice = sc.nextInt();
-        Heroes hero = new Heroes(choice).selectHero();
 
+            switch (choice) {
+                case 1:
+                    Warrior warrior = new Warrior();
+                    System.out.println(warrior);
+                    System.out.println("Deseja realmente utilizar esta classe S/n?");
+                    decisao = sc.next().charAt(0);
+                    if (decisao == 's') {
+                        warrior.distribuiPontos();
+                    }
+                    break;
+                case 2:
+                    Paladin paladin = new Paladin();
+                    System.out.println(paladin);
+                    System.out.println("Deseja realmente utilizar esta classe S/n?");
+                    decisao = sc.next().charAt(0);
+                    if (decisao == 's') {
+                        paladin.distribuiPontos();
+                    }
+                    break;
+                case 3:
+                    Barbarian barbarian = new Barbarian();
+                    System.out.println(barbarian);
+                    System.out.println("Deseja realmente utilizar esta classe S/n?");
+                    decisao = sc.next().charAt(0);
+                    if (decisao == 's') {
+                        barbarian.distribuiPontos();
+                    }
+                    break;
+                default:
+            }
+        }while(decisao == 'n');
 
-        if (hero instanceof Warrior) {
-            Warrior warrior = (Warrior) hero;
-            warrior.ability(); // Método específico de Warrior
-        } else if (hero instanceof Paladin) {
-            Paladin paladin = (Paladin) hero;
-            paladin.ability(); // Método específico de Paladin
-        } else if (hero instanceof Barbarian) {
-            Barbarian barbarian = (Barbarian) hero;
-            barbarian.ability(); // Método específico de Barbarian
-        }
-
-        System.out.println(hero);
         sc.close();
     }
 }
