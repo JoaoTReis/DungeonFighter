@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Barbarian extends Heroes{
 
-    Scanner sc = new Scanner(System.in);
-
     public Barbarian() {
         super(1, 1, 1, "Barbarian");
     }

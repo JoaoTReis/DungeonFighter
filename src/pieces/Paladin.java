@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Paladin extends Heroes{
 
-    Scanner sc = new Scanner(System.in);
-
     public Paladin() {
         super(1, 1, 1, "Paladin");
     }

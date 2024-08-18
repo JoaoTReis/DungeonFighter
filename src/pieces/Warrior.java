@@ -4,8 +4,6 @@ import java.util.Scanner;
 
 public class Warrior extends Heroes{
 
-    Scanner sc = new Scanner(System.in);
-
     public Warrior() {
         super(1, 1, 1, "Warrior");
     }
@@ -53,12 +51,13 @@ public class Warrior extends Heroes{
 
     }
 
-    public void defineVida(){
-
-    }
 
     @Override
     public String toString() {
+        return "W";
+    }
+
+    public String toStringDescription() {
         return "Warrior Description: \n"
                 +"defensor robusto que pode aumentar sua defesa em 50% por duas rodadas.\n";
     }

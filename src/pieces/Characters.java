@@ -1,6 +1,11 @@
 package pieces;
 
-public class Characters {
+import java.util.Scanner;
+
+public class Characters{
+
+    protected Scanner sc = new Scanner(System.in);
+
     private int life;
     private int defense;
     private int attack;
