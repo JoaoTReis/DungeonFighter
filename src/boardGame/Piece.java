@@ -1,29 +1,59 @@
 package boardGame;
 
-import pieces.Characters;
-import pieces.Elixir;
-import pieces.Heroes;
+import pieces.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 //gera a posicao da peca especifica no tabuleiro
 public class Piece {
 
-    private int cont = 0;
+    private Board board;
 
     protected Position position;
     List<Object> allClass = new ArrayList<>();
-    //List<Characters> characters = new ArrayList<>();
-    //List<Elixir> elixirs = new ArrayList<>();
+    private Object currentPiece;
 
-    public void addCharacters(){
-        allClass.add(new Heroes().decideHeroi());
+    public void addHero(Object object){
+        allClass.add(object);
     }
 
-    public void addElixir(){
-        allClass.add(new Elixir());
+    public void addNormalMonster(Object object){
+        allClass.add(object);
+    }
+
+    public void addBoss(Object object){
+        allClass.add(object);
+    }
+
+    public void addElixir(Object object){
+        allClass.add(object);
+    }
+
+    public void addTrapFixed(Object object){
+        allClass.add(object);
+    }
+
+    public void addTrapVariable(Object object){
+        allClass.add(object);
+    }
+
+    public boolean hasPiece() {
+        return allClass.isEmpty();
+    }
+
+    public boolean hasElixir() {
+        for(Object object : allClass){
+            if(object instanceof Elixir){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removePiece(Object object){
+        allClass.remove(object);
     }
 
     public void printPieces(){
@@ -35,4 +65,10 @@ public class Piece {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(allClass.toArray()); // Converte a lista em um array e usa o toString
+    }
+
 }

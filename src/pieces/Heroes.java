@@ -8,7 +8,6 @@ public class Heroes extends Characters{
 
         public Heroes() {
             super(0,0,0);
-
         }
 
         public Heroes(int life, int defense, int attack, String name) {
