@@ -1,24 +1,21 @@
 package pieces;
 
 public class Heroes extends Characters{
-        private String name;
         protected int abilitySpecial;
         protected int pontosXp;
         private Elixir bolsa = new Elixir();
 
         public Heroes() {
-            super(0,0,0);
+            super(0,0,0,null);
         }
 
         public Heroes(int life, int defense, int attack, String name) {
-            super(life, defense, attack);
-            this.name = name;
-            setLife(10);
+            super(life, defense, attack, name);
+            setLifeSum(10);
         }
 
-        public Characters decideHeroi(){
+        public Heroes decideHeroi(){
             char decisao = 0;
-            Characters selectedHero = null;
 
             do {
                 System.out.print("choose your hero:");
@@ -27,12 +24,12 @@ public class Heroes extends Characters{
                 switch (choice) {
                     case 1:
                         Warrior warrior = new Warrior();
-                        System.out.println(warrior.toStringDescription());
+                        System.out.println(warrior.printDescription());
                         System.out.println("Deseja realmente utilizar esta classe S/n?");
                         decisao = sc.next().charAt(0);
                         if (decisao == 's') {
                             warrior.distribuiPontos();
-                            selectedHero = warrior;
+                            return warrior;
                         }
                         break;
                     case 2:
@@ -42,6 +39,7 @@ public class Heroes extends Characters{
                         decisao = sc.next().charAt(0);
                         if (decisao == 's') {
                             paladin.distribuiPontos();
+                            return paladin;
                         }
                         break;
                     case 3:
@@ -51,16 +49,13 @@ public class Heroes extends Characters{
                         decisao = sc.next().charAt(0);
                         if (decisao == 's') {
                             barbarian.distribuiPontos();
+                            return barbarian;
                         }
                         break;
                     default:
                 }
             }while(decisao == 'n');
-            return selectedHero;
-        }
-
-        public String getName() {
-            return name;
+            return null;
         }
 
         public int getAbilitySpecial() {
@@ -89,7 +84,7 @@ public class Heroes extends Characters{
                 }else {
                     bolsa.qtdElixir -= escolha;
                     escolha *= 3;
-                    setLife(escolha);
+                    setLifeSum(escolha);
 
                 }
             }

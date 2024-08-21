@@ -9,7 +9,7 @@ public class Boss extends Monster{
     }
 
     public Boss() {
-        setLife(atributosBoss(5));
+        setLifeSum(atributosBoss(5));
         setAttack(atributosBoss(5));
         setDefense(atributosBoss(5));
         setName("The Boss");

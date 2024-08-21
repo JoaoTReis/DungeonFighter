@@ -1,5 +1,6 @@
 package boardGame;
 
+import gameActions.PerformActions;
 import pieces.*;
 
 import javax.swing.*;
@@ -15,28 +16,37 @@ public class Board extends JPanel {
     private int column = 10;
 
     //linhas da posicao do heroi
-    private int heroiRow =0;
-    private int heroiColumn = 0;
+    private int heroiRow;
+    private int heroiColumn;
 
     //Pecas no tabueiro
-    private Object hero=new Heroes().decideHeroi();
-    private Object boss= new Boss();
-    private Object[] elixirs = new Elixir[5];
-    private Object[] normalMonster = new NormalMonster[5];
-    private Object[] trapVariable = new Variable[5];
-    private Object[] trapFixed = new Fixed[5];
+    private Characters hero;
+    private Characters boss;
+    private Characters[] normalMonster;
+    private Elixir[] elixirs;
+    private Trap[] trapVariable;
+    private Trap[] trapFixed;
 
     //tabuleiro
-    private Piece[][] pieces = new Piece[row][column];
+    private Piece[][] pieces;
+    PerformActions actions;
 
     private JLabel messageLabel;
 
     public Board(){
-        for(int i=0;i< pieces.length;i++){
-            for(int j=0;j<pieces[i].length;j++){
-                pieces[i][j]= new Piece();
-            }
-        }
+        hero=new Heroes().decideHeroi();
+        heroiRow = 0;
+        heroiColumn = 0;
+        boss= new Boss();
+        elixirs = new Elixir[5];
+        normalMonster = new NormalMonster[5];
+        trapVariable = new Variable[5];
+        trapFixed = new Fixed[5];
+
+        pieces = new Piece[row][column];
+        actions = new PerformActions(this);
+
+        initBoard();
 
         messageLabel =new JLabel("Use the arrow keys to move."); // Adiciona um JLabel para mensagens
         this.add(messageLabel, BorderLayout.SOUTH);
@@ -47,17 +57,50 @@ public class Board extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 moveHero(e);
-                pegaElixir();
+                //pegaElixir();
                 repaint();
             }
         });
     }
 
+    //Geters
+
+
+    public Piece getPieces(int row,int column) {
+        return pieces[row][column];
+    }
+
+    public int getHeroiRow() {
+        return heroiRow;
+    }
+
+    public int getHeroiColumn() {
+        return heroiColumn;
+    }
+
+    public Characters getHero() {
+        return hero;
+    }
+
+    public Characters[] getNormalMonster() {
+        return normalMonster;
+    }
+
+    public Characters getBoss() {
+        return boss;
+    }
+
+    //metodo que inicializa o tabuleiro
     public void initBoard(){
 
+        for(int i=0;i< pieces.length;i++){
+            for(int j=0;j<pieces[i].length;j++){
+                pieces[i][j]= new Piece();
+            }
+        }
 
-        pieces[heroiRow][heroiColumn].addHero(hero);
-        pieces[4][9].addBoss(boss);
+        pieces[heroiRow][heroiColumn].addCharacter(hero);
+        pieces[4][9].addCharacter(boss);
 
 
         int ramdomRow = ThreadLocalRandom.current().nextInt(1,row);
@@ -66,7 +109,7 @@ public class Board extends JPanel {
         for(int i=0;i<elixirs.length;){ //5 numero de elixir
             if(!((ramdomRow == 0 && ramdomColumn == 0) || (ramdomRow == 4 && ramdomColumn == 9)) && pieces[ramdomRow][ramdomColumn].hasPiece()) {
                 elixirs[i]= new Elixir();
-                pieces[ramdomRow][ramdomColumn].addElixir(elixirs[i]);
+                pieces[ramdomRow][ramdomColumn].addItems(elixirs[i]);
                 ramdomRow = ThreadLocalRandom.current().nextInt(1, row);
                 ramdomColumn = ThreadLocalRandom.current().nextInt(1, column);
                 i++;
@@ -79,7 +122,7 @@ public class Board extends JPanel {
         for(int i=0;i<normalMonster.length;){ //5 numero de Monstros
             if(!((ramdomRow == 0 && ramdomColumn == 0) || (ramdomRow == 4 && ramdomColumn == 9)) && pieces[ramdomRow][ramdomColumn].hasPiece()) {
                 normalMonster[i] = new NormalMonster();
-                pieces[ramdomRow][ramdomColumn].addNormalMonster(normalMonster[i]);
+                pieces[ramdomRow][ramdomColumn].addCharacter(normalMonster[i]);
                 ramdomRow = ThreadLocalRandom.current().nextInt(1, row);
                 ramdomColumn = ThreadLocalRandom.current().nextInt(1, column);
                 i++;
@@ -91,7 +134,7 @@ public class Board extends JPanel {
         for(int i=0;i<trapFixed.length;){ //5 numero de Monstros
             if(!((ramdomRow == 0 && ramdomColumn == 0) || (ramdomRow == 4 && ramdomColumn == 9)) && pieces[ramdomRow][ramdomColumn].hasPiece()) {
                 trapFixed[i] = new Fixed();
-                pieces[ramdomRow][ramdomColumn].addTrapFixed(trapFixed[i]);
+                pieces[ramdomRow][ramdomColumn].addItems(trapFixed[i]);
                 ramdomRow = ThreadLocalRandom.current().nextInt(1, row);
                 ramdomColumn = ThreadLocalRandom.current().nextInt(1, column);
                 i++;
@@ -103,7 +146,7 @@ public class Board extends JPanel {
         for(int i=0;i<trapVariable.length;){ //5 numero de Monstros
             if(!((ramdomRow == 0 && ramdomColumn == 0) || (ramdomRow == 4 && ramdomColumn == 9)) && pieces[ramdomRow][ramdomColumn].hasPiece()) {
                 trapVariable[i] = new Variable();
-                pieces[ramdomRow][ramdomColumn].addTrapVariable(trapVariable[i]);
+                pieces[ramdomRow][ramdomColumn].addItems(trapVariable[i]);
                 ramdomRow = ThreadLocalRandom.current().nextInt(1, row);
                 ramdomColumn = ThreadLocalRandom.current().nextInt(1, column);
                 i++;
@@ -136,8 +179,10 @@ public class Board extends JPanel {
             pieces[heroiRow][heroiColumn].removePiece(hero);
             heroiRow = newRow;
             heroiColumn = newColumn;
-            pieces[heroiRow][heroiColumn].addHero(hero);
-            pegaElixir();
+            pieces[heroiRow][heroiColumn].addCharacter(hero);
+            actions.fight(pieces[heroiRow][heroiColumn]);
+            actions.getElixir(pieces[heroiRow][heroiColumn]);
+            actions.damageTrap(pieces[heroiRow][heroiColumn]);
         }
     }
 
@@ -161,15 +206,16 @@ public class Board extends JPanel {
         }
     }
 
-    public void pegaElixir(){
-        Piece currentPiece = pieces[heroiRow][heroiColumn]; //currentPiece = heroi
-
-        if(currentPiece.hasElixir()){
-            messageLabel.setText("Found an elixir!");
-            
-        }else if(!currentPiece.hasPiece()){
-            messageLabel.setText("Hero moving!");
-        }
-    }
+    //DEVE SER IMPLEMENTADO NA INTERFACE ACTIONS
+//    public void pegaElixir(){
+//        Piece currentPiece = pieces[heroiRow][heroiColumn]; //currentPiece = heroi
+//
+//        if(currentPiece.hasElixir()){
+//            messageLabel.setText("Found an elixir!");
+//
+//        }else if(!currentPiece.hasPiece()){
+//            messageLabel.setText("Hero moving!");
+//        }
+//    }
 
 }

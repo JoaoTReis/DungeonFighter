@@ -2,23 +2,17 @@ package pieces;
 
 public class Monster extends Characters{
 
-    private String name;
+    private static String chosenNormalMonster;
 
-    public Monster(){
-        super(0,0,0);
-
+    public Monster() {
+        super(0,0,0,null);
     }
 
-    public Monster(int life, int defense, int attack,String name) {
-        super(life, defense, attack);
-        this.name = name;
+    public Monster(int life, int defense, int attack, String name) {
+        super(life, defense, attack,name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String printAtributesMonster(){
+        return getName() +"{"+" Life: "+ getLife() +" Defense: "+ getDefense() +" Attack: "+ getAttack()+"}";
     }
 }

@@ -1,6 +1,7 @@
 package application;
 
 import boardGame.Board;
+import gameActions.PerformActions;
 import pieces.*;
 
 import javax.swing.*;
@@ -14,7 +15,6 @@ public class Program {
 
         Scanner sc = new Scanner(System.in);
 
-        board.initBoard();
         frame.add(board);
         frame.setSize(500, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -1,6 +1,6 @@
 package pieces;
 
-public class Elixir {
+public class Elixir extends Items{
     protected int qtdElixir = 0;
 
 

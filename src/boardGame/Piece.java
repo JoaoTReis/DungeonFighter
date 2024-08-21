@@ -9,42 +9,34 @@ import java.util.List;
 //gera a posicao da peca especifica no tabuleiro
 public class Piece {
 
-    private Board board;
+    List<Characters> characters = new ArrayList<>();
+    List<Items> items = new ArrayList<>();
 
-    protected Position position;
-    List<Object> allClass = new ArrayList<>();
-    private Object currentPiece;
-
-    public void addHero(Object object){
-        allClass.add(object);
+    public List<Characters> getCharacters() {
+        return characters;
     }
 
-    public void addNormalMonster(Object object){
-        allClass.add(object);
+    public void addCharacter(Characters character){
+        characters.add(character);
     }
 
-    public void addBoss(Object object){
-        allClass.add(object);
+    public void addItems(Items item){
+        items.add(item);
     }
 
-    public void addElixir(Object object){
-        allClass.add(object);
+
+    public void removePiece(Object object){
+        characters.remove(object);
     }
 
-    public void addTrapFixed(Object object){
-        allClass.add(object);
-    }
 
-    public void addTrapVariable(Object object){
-        allClass.add(object);
-    }
 
     public boolean hasPiece() {
-        return allClass.isEmpty();
+        return characters.isEmpty() && items.isEmpty();
     }
 
     public boolean hasElixir() {
-        for(Object object : allClass){
+        for(Items object : items){
             if(object instanceof Elixir){
                 return true;
             }
@@ -52,15 +44,50 @@ public class Piece {
         return false;
     }
 
-    public void removePiece(Object object){
-        allClass.remove(object);
+    public boolean hasNormalMonster() {
+        for(Characters object : characters){
+            if(object instanceof NormalMonster){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hastrapFixed() {
+        for(Items object : items){
+            if(object instanceof Fixed){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasTrapVariable() {
+        for(Items object : items){
+            if(object instanceof Variable){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasBoss() {
+        for(Characters object : characters){
+            if(object instanceof Boss){
+                return true;
+            }
+        }
+        return false;
     }
 
     public void printPieces(){
-        if(allClass.isEmpty()){
+        if(characters.isEmpty() && items.isEmpty()){
             System.out.printf("| %-4s"," ");
         }else {
-            for(Object object : allClass){
+            for(Characters object : characters){
+                System.out.printf("|  %-3s",object);
+            }
+            for(Items object : items){
                 System.out.printf("|  %-3s",object);
             }
         }
@@ -68,7 +95,8 @@ public class Piece {
 
     @Override
     public String toString() {
-        return Arrays.toString(allClass.toArray()); // Converte a lista em um array e usa o toString
+        return Arrays.toString(characters.toArray())+
+                Arrays.toString(items.toArray()); // Converte a lista em um array e usa o toString
     }
 
 }

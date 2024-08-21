@@ -1,7 +1,5 @@
 package pieces;
 
-import java.util.Scanner;
-
 public class Paladin extends Heroes{
 
     public Paladin() {
@@ -26,7 +24,7 @@ public class Paladin extends Heroes{
                 case 1:
                     System.out.println("Quantos pontos deseja acrecentar nessa habilidade? pontos (" + getPontosXp() + ")");
                     int pontosVida = sc.nextInt();
-                    setLife(pontosVida);
+                    setLifeSum(pontosVida);
                     pontos -= pontosVida;
                     setPontosXp(pontos);
                     break;

@@ -1,6 +1,6 @@
 package pieces;
 
-public class Trap {
+public class Trap extends Items{
     private int dano;
 
     public Trap(int dano) {

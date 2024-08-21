@@ -1,7 +1,5 @@
 package pieces;
 
-import java.util.Scanner;
-
 public class Barbarian extends Heroes{
 
     public Barbarian() {
@@ -25,7 +23,7 @@ public class Barbarian extends Heroes{
                 case 1:
                     System.out.println("Quantos pontos deseja acrecentar nessa habilidade? pontos (" + getPontosXp() + ")");
                     int pontosVida = sc.nextInt();
-                    setLife(pontosVida);
+                    setLifeSum(pontosVida);
                     pontos -= pontosVida;
                     setPontosXp(pontos);
                     break;
