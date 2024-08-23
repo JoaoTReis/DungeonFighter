@@ -9,11 +9,32 @@ import java.util.List;
 //gera a posicao da peca especifica no tabuleiro
 public class Piece {
 
-    List<Characters> characters = new ArrayList<>();
-    List<Items> items = new ArrayList<>();
+    private List<Characters> characters ;
+    private List<Items> items ;
+
+    public Piece() {
+        this.characters = new ArrayList<>();;
+        this.items = new ArrayList<>();
+    }
 
     public List<Characters> getCharacters() {
         return characters;
+    }
+
+    public List<Items> getItems() {
+        return items;
+    }
+
+    public Monster getMonster() {
+        for (Characters object : characters) {
+            if (object instanceof NormalMonster) {
+                return (NormalMonster) object;
+            }
+            if (object instanceof Boss) {
+                return (Boss) object;
+            }
+        }
+        return null; // Retorna null se nenhum monstro for encontrado
     }
 
     public void addCharacter(Characters character){
@@ -25,8 +46,15 @@ public class Piece {
     }
 
 
-    public void removePiece(Object object){
-        characters.remove(object);
+    public void removePieceCharecters(Characters object) {
+        if (object != null) {
+            characters.remove(object);
+        }
+    }
+    public void removePieceItems(Items object){
+        if(object != null){
+            items.remove(object);
+        }
     }
 
 
@@ -45,12 +73,7 @@ public class Piece {
     }
 
     public boolean hasNormalMonster() {
-        for(Characters object : characters){
-            if(object instanceof NormalMonster){
-                return true;
-            }
-        }
-        return false;
+        return getMonster() != null;
     }
 
     public boolean hastrapFixed() {

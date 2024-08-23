@@ -7,6 +7,8 @@ public class NormalMonster extends Monster{
         super(15, 27, 6,"Henchman");
     }
 
+
+
     @Override
     public String toString() {
         return "N";

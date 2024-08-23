@@ -5,6 +5,8 @@ public class Fixed extends Trap{
         super(1);
     }
 
+
+
     @Override
     public String toString() {
         return "F";

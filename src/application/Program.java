@@ -16,6 +16,7 @@ public class Program {
         Scanner sc = new Scanner(System.in);
 
         frame.add(board);
+        //frame.add();
         frame.setSize(500, 250);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);

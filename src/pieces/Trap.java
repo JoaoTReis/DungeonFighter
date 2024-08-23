@@ -11,7 +11,7 @@ public class Trap extends Items{
         return dano;
     }
 
-    public void setDano(int dano) {
-        this.dano = dano;
+    public void damageHero(Heroes hero,Trap trap){
+        hero.setLifeSubtract(trap.dano);
     }
 }

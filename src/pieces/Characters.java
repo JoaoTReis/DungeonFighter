@@ -56,4 +56,8 @@ public class Characters{
     public String printAttributes(){
         return getName()+"{ "+"Life: "+getLife()+" Defense: "+getDefense()+"Attack: "+getAttack()+"}";
     }
+
+    public boolean isAlive(){
+        return getLife() > 0;
+    }
 }
