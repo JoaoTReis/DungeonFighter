@@ -1,8 +1,22 @@
 package pieces;
 
 public class Elixir extends Items{
-    protected static int qtdElixir = 0;
+    private static int qtdElixir = 0;
     private final static int maxLimitBag = 3;
+
+    private Heroes heroes;
+
+    public Elixir(Heroes heroes) {
+        this.heroes=heroes;
+    }
+
+    public int getQtdElixir() {
+        return qtdElixir;
+    }
+
+    public void setQtdElixir(int qtdElixir) {
+        Elixir.qtdElixir = qtdElixir;
+    }
 
     public static boolean scholarshipLimit(){
         return qtdElixir < maxLimitBag;

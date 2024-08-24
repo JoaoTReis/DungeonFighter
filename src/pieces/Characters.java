@@ -21,6 +21,10 @@ public class Characters{
         return life;
     }
 
+    public boolean isAlive(){
+        return getLife() > 0;
+    }
+
     public void setLifeSum(int life) {
         this.life += life;
     }
@@ -55,9 +59,5 @@ public class Characters{
 
     public String printAttributes(){
         return getName()+"{ "+"Life: "+getLife()+" Defense: "+getDefense()+"Attack: "+getAttack()+"}";
-    }
-
-    public boolean isAlive(){
-        return getLife() > 0;
     }
 }

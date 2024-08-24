@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
 //tem a decaracao de linhas e colunas para determinar tamanho, position é a posicao no tabuleiro
-public class Board extends JPanel {
+public class Board {
     Scanner sc = new Scanner(System.in);
     //numero de pecas
     private final int NUMBERPICESSIZE = 5;
@@ -40,8 +40,6 @@ public class Board extends JPanel {
     private int turn;
     private Characters currentPlayer;
 
-    private JLabel messageLabel;
-
     public Board(){
         System.out.println("Choice your hero: ");
         int choice = sc.nextInt();
@@ -64,21 +62,18 @@ public class Board extends JPanel {
 
         initBoard();
 
-        messageLabel =new JLabel("Use the arrow keys to move."); // Adiciona um JLabel para mensagens
-        this.add(messageLabel, BorderLayout.SOUTH);
-        setLayout(new BorderLayout());
-
-
-        // Adiciona o KeyListener para capturar as teclas
-        this.setFocusable(true);
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                moveHero(e);
-                //pegaElixir();
-                repaint();
+        printfBoard();
+        while (hero.isAlive()) {
+            System.out.println("O que deseja fazer");
+            System.out.println("1 Movimentar heroi, 2 usar elixir, 3 verificar armadinha (apenas "+remainingTips+" usos)");
+            int choiceAction = sc.nextInt();
+            switch (choiceAction){
+                case 1->moveHero();
+                case 2->((Heroes)getHero()).usaElixir();
+                case 3->checkTrapsInDirections();
             }
-        });
+            printfBoard();
+        }
     }
 
     //Geters
@@ -149,15 +144,14 @@ public class Board extends JPanel {
 
     private void distribui(PieceType pieceType) {
         int i=0;
-        int ramdomRow;
-        int ramdomColumn;
+
         while(i< NUMBERPICESSIZE) {
+            int ramdomRow = dado(0,ROWSIZE);
+            int ramdomColumn = dado(0,COLUMNSIZE);
             if (pieceType != PieceType.BOSS) {
-                ramdomRow = ThreadLocalRandom.current().nextInt(0, ROWSIZE);
-                ramdomColumn = ThreadLocalRandom.current().nextInt(0, COLUMNSIZE);
                 if (hasPiece(ramdomRow, ramdomColumn)) {
                     if (pieceType == PieceType.ELIXIR) {
-                        elixirs[i] = new Elixir();
+                        elixirs[i] = new Elixir((Heroes)hero);
                         pieces[ramdomRow][ramdomColumn].addItems(elixirs[i]);
                     } else if (pieceType == PieceType.MONSTER) {
                         normalMonster[i] = new NormalMonster();
@@ -172,8 +166,6 @@ public class Board extends JPanel {
                     i++;
                 }
             }else {
-                ramdomRow = ThreadLocalRandom.current().nextInt(0, ROWSIZE);
-                ramdomColumn = ThreadLocalRandom.current().nextInt(0, COLUMNSIZE);
                 if (hasPiece(ramdomRow, ramdomColumn)) {
                     boss = new Boss();
                     if (ramdomRow > ramdomColumn) {
@@ -187,68 +179,109 @@ public class Board extends JPanel {
         }
     }
 
-    public void moveHero(KeyEvent e){
+    public void moveHero() {
         int newRow = heroiRow;
         int newColumn = heroiColumn;
 
-        switch (e.getKeyCode()){
-            case KeyEvent.VK_UP:
-                newRow = Math.max(0, heroiRow - 1);
-                break;
-            case KeyEvent.VK_DOWN:
-                newRow = Math.min(ROWSIZE - 1, heroiRow + 1);
-                break;
-            case KeyEvent.VK_LEFT:
-                newColumn = Math.max(0, heroiColumn - 1);
-                break;
-            case KeyEvent.VK_RIGHT:
-                newColumn = Math.min(COLUMNSIZE - 1, heroiColumn + 1);
-                break;
-        }
+        System.out.println("Digite a nova posição do herói:");
+        newRow = sc.nextInt();
+        newColumn = sc.nextInt();
 
+        if (isValidPosition(newRow, newColumn) && isAdjacentPosition(newRow, newColumn)) {
+            updateHeroPosition(newRow, newColumn);
+        } else {
+            System.out.println("Movimento inválido! O herói só pode se mover para casas adjacentes e dentro dos limites do tabuleiro.");
+        }
+    }
+
+    private boolean isValidPosition(int row, int column) {
+        return row >= 0 && row < ROWSIZE && column >= 0 && column < COLUMNSIZE;
+    }
+
+    private boolean isAdjacentPosition(int newRow, int newColumn) {
+        int rowDifference = Math.abs(newRow - heroiRow);
+        int columnDifference = Math.abs(newColumn - heroiColumn);
+        return (rowDifference == 1 && columnDifference == 0) || (rowDifference == 0 && columnDifference == 1);
+    }
+
+    private void updateHeroPosition(int newRow, int newColumn) {
         if (newRow != heroiRow || newColumn != heroiColumn) {
-            System.out.println("O que deseja fazer");
-            System.out.println("1 Usar pocao, 2 mover heroi");
+            System.out.println("Movendo o herói");
 
             pieces[heroiRow][heroiColumn].removePieceCharecters(hero);
             heroiRow = newRow;
             heroiColumn = newColumn;
             pieces[heroiRow][heroiColumn].addCharacter(hero);
 
-                actions.fight(pieces[heroiRow][heroiColumn]);
-                actions.getElixir(pieces[heroiRow][heroiColumn]);
-                actions.damageTrap(pieces[heroiRow][heroiColumn]);
+            actions.fight(pieces[heroiRow][heroiColumn]);
+            actions.getElixir(pieces[heroiRow][heroiColumn]);
+            actions.damageTrap(pieces[heroiRow][heroiColumn]);
             ((Heroes) getHero()).heroAlive();
         }
     }
 
-    public void nextTurn() {
-        turn++;
+    private int remainingTips = 3; // Variável de controle para o número de usos restantes da dica
+
+    private void checkTrapsInDirections() {
+        if (remainingTips <= 0) {
+            System.out.println("Você já usou todas as dicas disponíveis.");
+            return;
+        }
+
+        boolean trapFound = false;
+        StringBuilder message = new StringBuilder("Traps encontradas:\n");
+
+        int[][] directions = {
+                {1, 0}, // Abaixo
+                {-1, 0}, // Acima
+                {0, 1}, // Direita
+                {0, -1} // Esquerda
+        };
+
+        String[] directionNames = {"abaixo", "acima", "direita", "esquerda"};
+
+        for (int i = 0; i < directions.length; i++) {
+            int adjRow = heroiRow + directions[i][0];
+            int adjColumn = heroiColumn + directions[i][1];
+
+            if (isValidPosition(adjRow, adjColumn) &&
+                    (pieces[adjRow][adjColumn].hasTrapVariable() || pieces[adjRow][adjColumn].hastrapFixed())) {
+                message.append("Há uma trap ").append(directionNames[i]).append(" do herói.\n");
+                trapFound = true;
+            }
+        }
+
+        if (!trapFound) {
+            message.append("Não há traps nas direções adjacentes.");
+        }
+
+        System.out.println(message.toString());
+
+        remainingTips--; // Decrementa o número de usos restantes
+    }
+
+
+
+    public int nextTurn() {
         currentPlayer = (currentPlayer == getHero() && getPieces(heroiRow, heroiColumn).getMonster() != null)
                 ? getPieces(heroiRow, heroiColumn).getMonster()
                 : getHero();
-
-        // Após atualizar o turno, atualize o JLabel
-        //updateInfoLabel();
-    }
-//    public void removePiece(Piece piece){
-//        piece.removePiece(pieces[heroiRow][heroiColumn]);
-//    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        for (int i = 0; i < ROWSIZE; i++) {
-            for (int j = 0; j < COLUMNSIZE; j++) {
-                g.drawRect(j * 50, i * 50, 50, 50);
-                g.drawString(pieces[i][j].toString(), j * 50 + 20, i * 50 + 30);
-            }
-        }
+        return turn++;
     }
 
-    public String getTurnInfo(){
-        return "Turn: "+ getTurn();
+    public int dado(int maisBaixo,int maisAlto){
+        return ThreadLocalRandom.current().nextInt(maisBaixo,maisAlto);
     }
+
+    public String getActualTurnInfo(){
+        return ""+getTurn();
+    }
+
+    public String getActualCurrentPlayer(){
+        return "" + getCurrentPlayer();
+    }
+
+
 
     public void printfBoard(){
         for(int i=0;i< pieces.length;i++){
@@ -257,6 +290,6 @@ public class Board extends JPanel {
             }
             System.out.println("|");
         }
+        hero.printAttributes();
     }
-
 }
